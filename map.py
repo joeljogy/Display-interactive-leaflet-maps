@@ -9,31 +9,15 @@ from folium.plugins import FloatImage
 url = ('https://media.licdn.com/mpr/mpr/shrinknp_100_100/AAEAAQAAAAAAAAlgAAAAJGE3OTA4YTdlLTkzZjUtNDFjYy1iZThlLWQ5OTNkYzlhNzM4OQ.jpg')
 
 
-
-
-F_date = "12-05-2015"
-#Split the date
-day_list = [7,1,2,3,4,5,6]
-split_date = F_date.split('-')
-day = int(split_date[0])
-month = int(split_date[1])
-year = int(split_date[2])
-date = datetime.date(year,month,day)
-
-
-
-#Previous day
-prev_date = date + datetime.timedelta(days=-1)
-prev_day = prev_date.day
-prev_date_month = prev_date.month
-prev_date_year = prev_date.year
+day = 11
+month = 05
+year = 2015
 SF_COORDINATES = (37.76, -122.45)
 #crimedata = pd.read_csv('./datasets/new_train(kaggledata).csv')
 crimedata = pd.read_csv('./datasets/demo.csv')
 state_geo = './datasets/SFPD.json'
-crime_count = open('./datasets/crime_countdata.csv','w')
-# for speed purposes
-MAX_RECORDS = 878050
+
+
 list_of_crimes = ["WARRANTS","OTHER OFFENSES","LARCENY/THEFT","VEHICLE THEFT","VANDALISM","NON-CRIMINAL","ROBBERY","ASSAULT","WEAPON LAWS","BURGLARY","SUSPICIOUS OCC","DRUNKENNESS","FORGERY/COUNTERFEITING","DRUG/NARCOTIC","STOLEN PROPERTY","SECONDARY CODES","TRESPASS","MISSING PERSON","FRAUD","KIDNAPPING","RUNAWAY","DRIVING UNDER THE INFLUENCE","SEX OFFENSES FORCIBLE","PROSTITUTION","DISORDERLY CONDUCT","ARSON","FAMILY OFFENSES","LIQUOR LAWS","BRIBERY","EMBEZZLEMENT","SUICIDE","LOITERING","SEX OFFENSES NON FORCIBLE","EXTORTION","GAMBLING","BAD CHECKS","TREA","RECOVERED VEHICLE","PORNOGRAPHY/OBSCENE MAT"]
 list_of_pdistrict = ["NORTHERN","PARK","INGLESIDE","BAYVIEW","RICHMOND","CENTRAL","TARAVAL","TENDERLOIN","MISSION","SOUTHERN"] 
 count_of_pdistrict = {"NORTHERN":0,"PARK":0,"INGLESIDE":0,"BAYVIEW":0,"RICHMOND":0,"CENTRAL":0,"TARAVAL":0,"TENDERLOIN":0,"MISSION":0,"SOUTHERN":0}
@@ -42,16 +26,16 @@ m = folium.Map(location=SF_COORDINATES, zoom_start=13,tiles='CartoDBPositron')
 cluster = folium.plugins.MarkerCluster(name="Previous Crimes").add_to(m)
 
 # add a marker for every record in the filtered data, use a clustered view
-for each in crimedata[0:MAX_RECORDS].iterrows():
-    if ((int(each[1]['Day'])==prev_day) and (int(each[1]['Month'])==prev_date_month) and (int(each[1]['Year'])==prev_date_year)):
+for each in crimedata[0:878050].iterrows():
+    if ((int(each[1]['Day'])==day) and (int(each[1]['Month'])==month) and (int(each[1]['Year'])==year)):
         crime_name = list_of_crimes[int(each[1]['Category'])-1]
-        occ_date = "%s-%s-%s"%(str(prev_day),str(prev_date_month),str(prev_date_year))
+        occ_date = "%s-%s-%s"%(str(day),str(month),str(year))
         pdistrict = list_of_pdistrict[int(each[1]['PdDistrict'])-1]
         count_of_pdistrict[pdistrict]=(count_of_pdistrict[pdistrict])+1
         location = "%s,%s"%(each[1]['Y'],each[1]['X'])
         folium.Marker(location = [each[1]['Y'],each[1]['X']], popup='<b>Occured date: </b>%s<br></br><b>Crime Type: </b>%s<br></br><b>Police District: </b>%s<br></br><b>Location: </b>%s'%(occ_date,crime_name,pdistrict,location),).add_to(cluster)
 
-
+crime_count = open('./datasets/crime_countdata.csv','w')
 crime_count.write('PD,Crime_Count\n')
 for key in count_of_pdistrict:
     crime_count.write("%s,%s\n"%(key,str(count_of_pdistrict[key])))
@@ -90,6 +74,6 @@ folium.TileLayer(tiles='Stamen Toner',name="Stamen Toner").add_to(m)
 folium.TileLayer(tiles='Stamen Terrain',name="Stamen Terrain").add_to(m)
 folium.LayerControl().add_to(m)
 m.add_child(MeasureControl())
-FloatImage(url, bottom=5, left=85).add_to(m)
+
 m.save('index.html')
 print "Saving the webpage for map...."
