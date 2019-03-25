@@ -1,4 +1,4 @@
-# Display-folium-maps
+# Develop interactive leaflet maps using Folium on Python
 Build an interactive choropleth based leaflet map using Folium package in Python. 
 Features of the map includes:  
 * Choropleth (Thematic map in which areas are shaded or patterned in proportion to a factor)
