@@ -7,6 +7,8 @@ Features of the map includes:
 * LayerControl (Allows viewing option of different tile map)
 * MeasureControl (Allows measuring of distance between two location markers)
 
+Step-by-step tutorial for this project can be found on https://link.medium.com/n&9z7sB2mV
+
 
 # Requirements
 * Python 2.7.x
